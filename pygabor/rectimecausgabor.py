@@ -1,9 +1,8 @@
 """pygabor.rectimecausgabor 
 """
 
-from typing import Union
 import numpy as np
-from pytempscsp.tempscsp import limitkernfilt, limitkernfilt_mult
+
 
 class RecursiveTimeCausGaborMethod:
     omega : np.ndarray
@@ -93,5 +92,3 @@ class RecursiveTimeCausGaborMethod:
         n += 1
 
         return level
-
-
