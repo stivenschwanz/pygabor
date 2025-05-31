@@ -36,7 +36,7 @@ class RecursiveTimeCausGaborMethod:
         # Angular frequencies [rad/s]
         self.omega = omega
 
-        self.J = np.len(omega)       
+        self.J = np.size(omega)
 
         assert self.J > 1
 
