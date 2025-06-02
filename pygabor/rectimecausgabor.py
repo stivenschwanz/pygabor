@@ -16,8 +16,9 @@ class RecursiveTimeCausGaborMethod:
     level : np.ndarray
     level_prev : np.ndarray
     n : int
+    L : int
 
-    def __init__(self, omega, delta_t = 1.0, c = 2.0, numlevels = 16, N = 1.0):
+    def __init__(self, omega, delta_t = 1.0, c = 2.0, numlevels = 16, N = 1.0, L = 100):
 
         # Distribution parameter
         self.c = c
@@ -52,8 +53,6 @@ class RecursiveTimeCausGaborMethod:
 
         assert self.delta_t > 0
 
-        self.duration = self.K * self.delta_t
-
         # Sampling rate [Hz]
         r = 1.0/delta_t
 
@@ -81,6 +80,15 @@ class RecursiveTimeCausGaborMethod:
                 self.gain[j,k] = 1/(1+self.mu[j,k])
 
         self.n = 0
+
+        # Signal length
+        self.L = L
+
+        assert self.L > 1
+
+        self.duration = self.L * self.delta_t
+
+        self.spectrogramchart = np.zeros((self.J*self.K, self.L))
     
     def process(self, signal):
         for j in range(self.J):
@@ -109,8 +117,10 @@ class RecursiveTimeCausGaborMethod:
         logspectrogram = 20 * np.log10(absspectrogram/maxval + lowsoftthresh)
         logspectrogram[logspectrogram < -maxrange] = -maxrange
 
+        self.spectrogramchart[:,self.n-1] = logspectrogram.flatten()
+
         im = \
-        plt.imshow(logspectrogram, \
+        plt.imshow(self.spectrogramchart, \
                     cmap='jet', interpolation='nearest', aspect='auto', \
                     origin='lower', \
                     extent=[0, self.duration, min(self.frequencies), max(self.frequencies)])
